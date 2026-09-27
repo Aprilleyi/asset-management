@@ -5,11 +5,11 @@ services:
       dockerfile: backend/Dockerfile
     user: "${ASSET_MANAGER_UID:-1000}:${ASSET_MANAGER_GID:-1000}"
     environment:
-      ASSET_MANAGER_DATABASE_PATH: /srv/runtime/data/asset_prod.sqlite3
+      ASSET_MANAGER_DATABASE_PATH: "${ASSET_MANAGER_DOCKER_DATABASE_PATH:-/srv/runtime/data/asset_test.sqlite3}"
       ASSET_MANAGER_BACKUP_DIR: /srv/runtime/backups
       ASSET_MANAGER_UPLOAD_DIR: /srv/runtime/uploads
       ASSET_MANAGER_OCR_CACHE_DIR: /srv/runtime/ocr-cache
-      ASSET_MANAGER_SCHEDULER_ENABLED: "true"
+      ASSET_MANAGER_SCHEDULER_ENABLED: "${ASSET_MANAGER_DOCKER_SCHEDULER_ENABLED:-false}"
       ASSET_MANAGER_SCHEDULER_TIMEZONE: Asia/Shanghai
       ASSET_MANAGER_API_HOST: 0.0.0.0
       ASSET_MANAGER_API_PORT: "8000"

@@ -81,7 +81,7 @@ cd backend
 
 ### Linux Docker Compose
 
-目标目录为 `/opt/apps/asset-management/`。服务器先准备私有 `.env` 和 `runtime/{data,backups,uploads,ocr-cache}`，确保 bind mount 对 Compose 中配置的 UID/GID 可写。初次迁移时应先恢复到 `runtime/data/asset_prod.sqlite3.new` 并核对，再停机提升为正式文件；对旧 schema 执行经验证的 `baseline`。服务器的首次数据库恢复和 baseline 必须单独确认。
+目标目录为 `/opt/apps/asset-management/`。服务器先准备私有 `.env` 和 `runtime/{data,backups,uploads,ocr-cache}`，确保 bind mount 对 Compose 中配置的 UID/GID 可写。Compose 默认使用隔离的 `runtime/data/asset_test.sqlite3` 且禁用 scheduler；完成只读盘点、选定空闲回环端口后，先在测试库上构建和验证。初次迁移时应先恢复到 `runtime/data/asset_prod.sqlite3.new` 并核对，再经单独确认后提升为正式文件；对旧 schema 执行经验证的 `baseline`。服务器的首次数据库恢复和 baseline 必须单独确认。
 
 Linux 根目录 `.env` 示例（只写服务器专用值，不进 Git）：
 
@@ -90,13 +90,16 @@ ASSET_MANAGER_FRONTEND_PORT=8088
 ASSET_MANAGER_UID=1000
 ASSET_MANAGER_GID=1000
 ASSET_MANAGER_OCR_PROVIDER=none
+ASSET_MANAGER_DOCKER_DATABASE_PATH=/srv/runtime/data/asset_test.sqlite3
+ASSET_MANAGER_DOCKER_SCHEDULER_ENABLED=false
 ```
 
-Compose 固定容器内数据库和目录路径；无需设置 DB_HOST/DB_PASSWORD。OCR 可在以后通过环境变量切换到远程服务或独立容器。
+Compose 将数据目录挂载到容器内 `/srv/runtime`；无需设置 DB_HOST/DB_PASSWORD。OCR 可在以后通过环境变量切换到远程服务或独立容器。只有正式库经过确认并 promote 后，才可把 `ASSET_MANAGER_DOCKER_DATABASE_PATH` 改为 `/srv/runtime/data/asset_prod.sqlite3` 并显式启用 scheduler。
 
 ```bash
 docker compose build
-docker compose run --rm --no-deps backend python -m app.db.migrate status --database /srv/runtime/data/asset_prod.sqlite3
+docker compose run --rm --no-deps backend python -m app.db.migrate upgrade --database /srv/runtime/data/asset_test.sqlite3
+docker compose run --rm --no-deps backend python -m app.db.migrate status --database /srv/runtime/data/asset_test.sqlite3
 docker compose up -d
 docker compose ps
 ```

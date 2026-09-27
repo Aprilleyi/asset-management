@@ -18,6 +18,10 @@ if [ ! -f runtime/data/asset_prod.sqlite3 ]; then
   echo "Production DB is missing; use the reviewed first-deployment procedure" >&2
   exit 1
 fi
+if [ "${ASSET_MANAGER_DOCKER_DATABASE_PATH:-}" != "/srv/runtime/data/asset_prod.sqlite3" ]; then
+  echo "Set ASSET_MANAGER_DOCKER_DATABASE_PATH to the approved production DB path before deployment" >&2
+  exit 1
+fi
 
 git pull --ff-only
 docker compose build
