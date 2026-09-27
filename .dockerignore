@@ -1,0 +1,14 @@
+.git
+.env
+.env.*
+!.env.example
+backend/.venv
+backend/.pytest_cache
+**/__pycache__
+frontend/node_modules
+frontend/dist
+data
+backups
+runtime
+uploads
+投资/.obsidian

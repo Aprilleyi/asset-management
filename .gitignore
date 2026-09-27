@@ -1,0 +1,47 @@
+.DS_Store
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+id_rsa*
+id_ed25519*
+*secret*
+*credentials*
+*.log
+*.tmp
+*.temp
+*.bak
+*.swp
+*~
+asset-manager-export-*.json
+runtime/
+uploads/
+data/ocr_uploads/
+data/paddleocr_home/
+投资/.obsidian/
+
+# Python
+__pycache__/
+*.py[cod]
+backend/.venv/
+.pytest_cache/
+backend/.pytest_cache/
+
+# Frontend
+frontend/node_modules/
+frontend/dist/
+frontend/*.tsbuildinfo
+frontend/vite.config.js
+frontend/vite.config.d.ts
+
+# Local data
+data/*.sqlite
+data/*.sqlite3
+data/*.sqlite3-*
+backups/
+!data/.gitkeep
+
+# Logs and env
